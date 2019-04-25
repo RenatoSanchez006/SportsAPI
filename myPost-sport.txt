@@ -1,0 +1,39 @@
+app.post('/post-sport', jsonParser, (req, res) => {
+	let sportId = req.body.id;
+	let sportName = req.body.name;
+
+	// Validate that we receive both of the params
+	// Send error with status 406 'Missing fields'
+	if (typeof sportId == 'undefined' || typeof sportName == 'undefined') {
+		res.status(406).json({
+			message: 'Missing fields',
+			status: 406
+		});
+	}
+	
+	// Validate id received is not in the current array, 
+	// Send an error if its isn't received
+	sportsArray.forEach(item => {
+		if (item.id == sportId) {
+			res.status(400).json({
+				message: 'Id already exists',
+				status: 400
+			});
+		}
+	});
+
+	// Success callback with status 201 with the
+	// just created object
+	let newSport = {
+		name: sportName,
+		id: sportId
+	}
+	sportsArray.push(newSport);
+	console.log(sportsArray);
+
+	res.status(200).json({
+		message: 'Success, sport created',
+		status: 200,
+		sport: newSport
+	});
+});
